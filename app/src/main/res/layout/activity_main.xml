@@ -48,4 +48,33 @@
         android:layout_height="wrap_content"
         android:id="@+id/questionResultTextView"
         android:textSize="18sp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:text="Précédent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button"
+            android:layout_weight="1"
+            android:drawableStart="@drawable/ic_fast_rewind_black_24dp" />
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView"
+            android:layout_weight="1" />
+
+        <Button
+            android:text="Suivant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button2"
+            android:layout_weight="1"
+            android:drawableEnd="@drawable/ic_fast_forward_black_24dp" />
+    </LinearLayout>
 </LinearLayout>

@@ -58,22 +58,21 @@
             android:text="Précédent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/button"
+            android:id="@+id/previousButton"
             android:layout_weight="1"
             android:drawableStart="@drawable/ic_fast_rewind_black_24dp" />
 
         <TextView
-            android:text="TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView"
+            android:id="@+id/navTextView"
             android:layout_weight="1" />
 
         <Button
             android:text="Suivant"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/button2"
+            android:id="@+id/nextButton"
             android:layout_weight="1"
             android:drawableEnd="@drawable/ic_fast_forward_black_24dp" />
     </LinearLayout>

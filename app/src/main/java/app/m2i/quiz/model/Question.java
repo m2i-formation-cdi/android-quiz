@@ -48,4 +48,8 @@ public class Question {
     public void setUserAnswer(Boolean userAnswer) {
         this.userAnswer = userAnswer;
     }
+
+    public boolean isAnswered(){
+        return userAnswer != null;
+    }
 }

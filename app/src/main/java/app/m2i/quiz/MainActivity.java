@@ -18,7 +18,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "MainActivity";
 
     private Question currentQuestion;
-    private int currentQuestionIndex = 0;
+    private int currentQuestionIndex = 4;
 
     private TextView questionTextView;
 
@@ -80,6 +80,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         //Affichage du récapitulatif de la navigation
         String navigationText = (currentQuestionIndex + 1) + " sur " + questionList.size();
         navTextView.setText(navigationText);
+
+        //Affichage du résultat de la réponse
+        showQuestionResult();
     }
 
     @Override
@@ -105,24 +108,40 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void goToNextQuestion(){
-        if(currentQuestionIndex < questionList.size()){
+        if(currentQuestionIndex < questionList.size()-1){
             currentQuestionIndex ++;
             showQuestion();
         }
     }
 
     private void checkAnswer(boolean userAnswer) {
+        currentQuestion.setUserAnswer(userAnswer);
+        showQuestionResult();
+    }
+
+    private void showQuestionResult(){
         String message;
         //Définition du message en fonction de la réponse
-        if(userAnswer == currentQuestion.getGoodAnswer()){
+        Boolean userAnswer = currentQuestion.getUserAnswer();
+
+        if(userAnswer == null){
+            message = "";
+        }else if(userAnswer == currentQuestion.getGoodAnswer()){
             message = "Bonne réponse";
         } else {
             message = "Mauvaise réponse";
         }
+
         //Affichage du message
         TextView questionResult = (TextView) findViewById(R.id.questionResultTextView);
         questionResult.setText(message);
 
+        //Activation/désactivation des boutons de réponse
+        buttonFalse.setEnabled(! currentQuestion.isAnswered());
+        buttonTrue.setEnabled(! currentQuestion.isAnswered());
+        //Activation/désactivation des boutons de navigation
+        prevButton.setEnabled(currentQuestionIndex > 0);
+        nextButton.setEnabled(currentQuestionIndex < questionList.size()-1);
     }
 
     public void onStart(){

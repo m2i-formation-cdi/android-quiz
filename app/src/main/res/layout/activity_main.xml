@@ -11,6 +11,13 @@
     tools:context="app.m2i.quiz.MainActivity"
     android:orientation="vertical">
 
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/questionSpinner"
+        android:entries="@array/spinner_data"
+        android:spinnerMode="dialog" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -52,7 +59,7 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <Button
             android:text="Précédent"
@@ -76,4 +83,10 @@
             android:layout_weight="1"
             android:drawableEnd="@drawable/ic_fast_forward_black_24dp" />
     </LinearLayout>
+
+    <Button
+        android:text="Solution"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/solutionButton" />
 </LinearLayout>

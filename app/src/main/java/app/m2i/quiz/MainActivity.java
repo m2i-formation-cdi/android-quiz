@@ -1,24 +1,32 @@
 package app.m2i.quiz;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import app.m2i.quiz.model.Question;
 
-public class MainActivity extends Activity implements View.OnClickListener {
+public class MainActivity extends Activity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     //Constante de classe utilisée dans les logs
     private static final String TAG = "MainActivity";
+    private static final int SOLUTION_ACTIVITY = 1;
 
     private Question currentQuestion;
-    private int currentQuestionIndex = 4;
+    private int currentQuestionIndex = 0;
 
     private TextView questionTextView;
 
@@ -29,6 +37,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private Button prevButton;
     private Button nextButton;
     private TextView navTextView;
+
+    private Button solutionButton;
+    private Intent intention;
+
+    private Spinner questionSpinner;
+
+    //Déclaration de la variable utilisé pour la synthèse vocale
+    private TextToSpeech textToSpeech;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +64,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
         nextButton = (Button) findViewById(R.id.nextButton);
         navTextView = (TextView) findViewById(R.id.navTextView);
 
+        solutionButton = (Button) findViewById(R.id.solutionButton);
+        solutionButton.setOnClickListener(this);
+
+        //Référence au widget Spinner
+        questionSpinner = (Spinner) findViewById(R.id.questionSpinner);
+
+        //Gestion de l'événement sur le spinner
+        questionSpinner.setOnItemSelectedListener(this);
+
         //Gestion des événements
         buttonFalse.setOnClickListener(this);
         buttonTrue.setOnClickListener(this);
@@ -61,6 +86,23 @@ public class MainActivity extends Activity implements View.OnClickListener {
         questionList.add(new Question("Python est plus vieux que Java", true));
         questionList.add(new Question("Android tourne sur IOS", false));
         questionList.add(new Question("Bill Gate a inventé MS-DOS", true));
+        questionList.add(new Question("Christophe Collomb a découvert l'eau tiède", false));
+
+
+        //Instanciation de la classe TextToSpeech
+        textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status == TextToSpeech.SUCCESS){
+                    textToSpeech.setLanguage(Locale.FRENCH);
+                } else {
+                    Toast.makeText(
+                            getApplicationContext(),
+                            "La synthèse vocale n'est pas supportée",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         //Restauration de l'état sauvegardé de l'application
         if(savedInstanceState != null){
@@ -72,6 +114,30 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void showQuestion(){
+
+        //Définition du spinner
+        //Source de données du spinner
+        String[] spinnerData = new String[questionList.size()];
+        for(int i =0; i < questionList.size(); i++){
+            Question question = questionList.get(i);
+            String spinnerText = "Question " + (i+1)+ " ";
+            if(question.isAnswered()){
+                spinnerText += "(répondue)";
+            }
+
+            spinnerData[i] = spinnerText;
+        }
+
+        //Création de l'arrayAdapter
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, spinnerData);
+        //Définition de la vue lorsque le spinner est ouvert
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //Attacher l'adapter au spinner
+        questionSpinner.setAdapter(adapter);
+
+        questionSpinner.setSelection(currentQuestionIndex);
+
+
         //Définition de la question en cours
         currentQuestion = questionList.get(currentQuestionIndex);
         //Affichage de la question
@@ -80,6 +146,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         //Affichage du récapitulatif de la navigation
         String navigationText = (currentQuestionIndex + 1) + " sur " + questionList.size();
         navTextView.setText(navigationText);
+
+        //Lecture de la question avec la synthèse vocale
+        textToSpeech.speak(currentQuestion.getText(), TextToSpeech.QUEUE_FLUSH, null);
 
         //Affichage du résultat de la réponse
         showQuestionResult();
@@ -97,12 +166,19 @@ public class MainActivity extends Activity implements View.OnClickListener {
             goToPreviousQuestion();
         } else if (v == nextButton){
             goToNextQuestion();
+        } else if(v== solutionButton){
+            intention = new Intent(this, SolutionActivity.class);
+            //Transfert d'info à l'activité solution
+            intention.putExtra("questionIndex", currentQuestionIndex);
+            intention.putExtra("questionAnswer", currentQuestion.getGoodAnswer());
+            startActivityForResult(intention, SOLUTION_ACTIVITY);
         }
     }
 
     private void goToPreviousQuestion() {
         if(currentQuestionIndex >0){
             currentQuestionIndex --;
+            questionSpinner.setSelection(currentQuestionIndex);
             showQuestion();
         }
     }
@@ -110,6 +186,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private void goToNextQuestion(){
         if(currentQuestionIndex < questionList.size()-1){
             currentQuestionIndex ++;
+            questionSpinner.setSelection(currentQuestionIndex);
             showQuestion();
         }
     }
@@ -171,5 +248,30 @@ public class MainActivity extends Activity implements View.OnClickListener {
         savedInstanceState.putInt("currentQuestionIndex", currentQuestionIndex);
 
         super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        //L'index de la question en cours doit correspondre à l'index de la ligne sélectionnée dans le spinner
+        currentQuestionIndex = position;
+
+        //Affichage du texte de la ligne sélectionnée
+        Log.d(TAG, parent.getItemAtPosition(position).toString());
+        showQuestion();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    public void onActivityResult (int requestCode, int resultCode, Intent data){
+        boolean superTriche = data.getBooleanExtra("superTriche", false);
+        long questionId = data.getLongExtra("questionIndex", 0);
+        currentQuestionIndex = (int)questionId;
+        showQuestion();
+        if(superTriche){
+            checkAnswer(currentQuestion.getGoodAnswer());
+        }
     }
 }

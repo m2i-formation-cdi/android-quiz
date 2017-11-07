@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public class Question {
     private String text;
-    private UUID id;
+    private Long id;
     private Boolean goodAnswer;
     private Boolean userAnswer;
 
@@ -14,7 +14,7 @@ public class Question {
     public Question(String text, Boolean goodAnswer) {
         this.text = text;
         this.goodAnswer = goodAnswer;
-        this.id = UUID.randomUUID();
+        //this.id = UUID.randomUUID();
     }
 
     public String getText() {
@@ -25,11 +25,11 @@ public class Question {
         this.text = text;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

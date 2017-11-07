@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import app.m2i.quiz.model.DatabaseHelper;
 import app.m2i.quiz.model.Question;
 
 public class MainActivity extends Activity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
@@ -290,11 +291,16 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
 
                 break;
             case R.id.optionsLoadSQL:
+                //Changement de la liste des questions
+                DatabaseHelper dbHelper = new DatabaseHelper(this);
+                questionList = dbHelper.findAllQuestions();
 
+                //Réinitialisation de l'index de la question en cours
+                currentQuestionIndex = 0;
+                //affichage de la question
+                showQuestion();
                 break;
         }
-
-
         return true;
     }
 }

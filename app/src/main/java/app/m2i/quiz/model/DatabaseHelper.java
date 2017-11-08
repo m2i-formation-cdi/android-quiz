@@ -108,4 +108,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return questionList;
     }
+
+    /**
+     * Suppression dans la base SQLite
+     * @param questionId
+     */
+    public void delete(Long questionId) {
+        String [] params  = {String.valueOf(questionId)};
+        writableDB.delete("questions", "id=?", params);
+    }
+
+    /**
+     * Insertion de données dans la base
+     * @param questionText
+     * @param goodAnswer
+     */
+    public void insert(String questionText, Boolean goodAnswer) {
+        ContentValues values = new ContentValues();
+        values.put("question_text", questionText);
+        values.put("good_answer", goodAnswer);
+
+        writableDB.insert("questions", null, values);
+    }
 }

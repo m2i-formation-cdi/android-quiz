@@ -300,6 +300,11 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
                 //affichage de la question
                 showQuestion();
                 break;
+            case R.id.optionManageQuestions:
+                Intent intention = new Intent(this, QuestionActivity.class);
+                startActivity(intention);
+                break;
+
         }
         return true;
     }

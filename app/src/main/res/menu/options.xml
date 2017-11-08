@@ -2,9 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:title="Load JSON"
-        android:id="@+id/optionsLoadJson"
-        android:showAsAction="ifRoom" />
+        android:id="@+id/optionsLoadJson" />
     <item android:title="Load SQL"
-        android:id="@+id/optionsLoadSQL"
+        android:id="@+id/optionsLoadSQL" />
+    <item android:title="Gérer les questions"
+        android:id="@+id/optionManageQuestions"
         android:showAsAction="ifRoom" />
 </menu>
